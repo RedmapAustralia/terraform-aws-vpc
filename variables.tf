@@ -1654,3 +1654,9 @@ variable "putin_khuylo" {
   type        = bool
   default     = true
 }
+
+variable "private_route_table_names" {
+  description = "Explicit values to use in the Name tag on private route tables. If empty, Name tags are generated"
+  type        = list(string)
+  default     = []
+}

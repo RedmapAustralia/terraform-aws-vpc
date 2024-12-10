@@ -129,7 +129,7 @@ locals {
 }
 
 resource "aws_route_table" "public" {
-  count = 0
+  count = local.create_public_subnets ? local.num_public_route_tables : 0
 
   vpc_id = local.vpc_id
 
@@ -261,23 +261,20 @@ resource "aws_subnet" "private" {
 
 # There are as many routing tables as the number of NAT gateways
 resource "aws_route_table" "private" {
-  count = 0
-
+  #count = local.create_private_subnets && local.max_subnet_length > 0 ? local.nat_gateway_count : 0
+  count  = length(var.private_route_table_names)
   vpc_id = local.vpc_id
 
   tags = merge(
     {
-      "Name" = var.single_nat_gateway ? "${var.name}-${var.private_subnet_suffix}" : format(
-        "${var.name}-${var.private_subnet_suffix}-%s",
-        element(var.azs, count.index),
-      )
+      "Name" = var.private_route_table_names[count.index]
     },
     var.tags,
     var.private_route_table_tags,
   )
 }
 
-resource "aws_route_table_association" "private" {
+resource "aws_route_table_associattion" "private" {
   count = 0
 
   subnet_id = element(aws_subnet.private[*].id, count.index)
