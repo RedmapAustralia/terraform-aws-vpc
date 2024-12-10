@@ -274,7 +274,7 @@ resource "aws_route_table" "private" {
   )
 }
 
-resource "aws_route_table_associattion" "private" {
+resource "aws_route_table_association" "private" {
   count = 0
 
   subnet_id = element(aws_subnet.private[*].id, count.index)
